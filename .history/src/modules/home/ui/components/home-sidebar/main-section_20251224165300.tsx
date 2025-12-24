@@ -47,11 +47,11 @@ export const MainSection = () => {
                 asChild
                 isActive={false} //TODO:Change to look at current pathname
                 onClick={(e) => {
-                  if (!isSignedIn && item.auth) {
+                  if (!signedIn && item.auth) {
                     e.preventDefault();
                     return clerk.openSignIn();
                   }
-                }}
+                }} //TODO: Do something on click
               >
                 <Link href={item.url} className="flex items-center gap-4">
                   <item.icon />
