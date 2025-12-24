@@ -8,9 +8,6 @@ export const AuthButton = () => {
   return (
     // TODO: Add diffferent auth states
     <>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
       <SignedOut>
         <SignInButton mode="modal">
           <Button
