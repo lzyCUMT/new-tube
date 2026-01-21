@@ -66,26 +66,8 @@ export async function POST(req: Request) {
     });
   }
 
-  if (eventType === "user.deleted") {
-    const data = evt.data;
-    if (!data.id) {
-      return new Response("Missing user id", { status: 400 });
-    }
-    await db.delete(users).where(eq(users.clerkId, data.id));
-  }
-
   if (eventType === "user.updated") {
-    const data = evt.data;
-    if (!data.id) {
-      return new Response("Missing user id", { status: 400 });
-    }
-    await db
-      .update(users)
-      .set({
-        name: `{data.firstName} {data.lastName}}`,
-        imageUrl: data.image_url,
-      })
-      .where(eq(users.clerkId, data.id));
+    console.log("用户信息已更新:", evt.data);
   }
 
   return new Response("Success", { status: 200 });

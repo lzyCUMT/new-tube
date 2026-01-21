@@ -1,5 +1,4 @@
 import { Webhook } from "svix";
-import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { users } from "@/db/schema";
@@ -54,38 +53,21 @@ export async function POST(req: Request) {
 
   const eventType = evt.type;
 
+  console.log(`收到 Webhook! ID: ${data}, 类型: ${eventType}`);
+
   if (eventType === "user.created") {
-    const data = evt.data;
+    const { data } = evt.data;
     // 这里执行你的数据库写入操作，例如：
     // await db.user.create({ data: { clerkId: id, ... } })
     // console.log("新用户已创建:", evt.data);
     await db.insert(users).values({
       clerkId: data.id,
       name: `{data.firstName} {data.lastName}}`,
-      imageUrl: data.image_url,
     });
   }
 
-  if (eventType === "user.deleted") {
-    const data = evt.data;
-    if (!data.id) {
-      return new Response("Missing user id", { status: 400 });
-    }
-    await db.delete(users).where(eq(users.clerkId, data.id));
-  }
-
   if (eventType === "user.updated") {
-    const data = evt.data;
-    if (!data.id) {
-      return new Response("Missing user id", { status: 400 });
-    }
-    await db
-      .update(users)
-      .set({
-        name: `{data.firstName} {data.lastName}}`,
-        imageUrl: data.image_url,
-      })
-      .where(eq(users.clerkId, data.id));
+    console.log("用户信息已更新:", evt.data);
   }
 
   return new Response("Success", { status: 200 });
