@@ -58,38 +58,34 @@ export async function POST(req: Request) {
     const { id, first_name, last_name, image_url } = evt.data;
     // 这里执行你的数据库写入操作，例如：
     // await db.user.create({ data: { clerkId: id, ... } })
-    await db.insert(users).values({
+   await db.insert(users).values({
       // 必须使用 schema.ts 第 12 行定义的变量名 clerkId
-      clerkId: id,
+      clerkId: id, 
       // 必须使用 schema.ts 第 13 行定义的变量名 name
       name: `${first_name || ""} ${last_name || ""}`.trim() || "新用户",
       // 必须使用 schema.ts 第 14 行定义的变量名 imageUrl
-      imageUrl: image_url || "",
+      imageUrl: image_url || "", 
     });
-  }
   if (eventType === "user.deleted") {
-    const { id } = evt.data; // deleted 事件中 id 可能在根部
-
-    if (!id) {
+    const data = evt.data;
+    if (!data.id) {
       return new Response("Missing user id", { status: 400 });
     }
-
-    // 修复：使用 users.clerkId 且 data 来源正确
-    await db.delete(users).where(eq(users.clerkId, id));
+    await db.delete(users).where(eq(users.clerkId, data.id));
   }
 
   if (eventType === "user.updated") {
     const { id, first_name, last_name, image_url } = evt.data;
-    if (!id) {
+    if (!data.id) {
       return new Response("Missing user id", { status: 400 });
     }
-    await db.insert(users).values({
+await db.insert(users).values({
       // 2. 必须使用 schema.ts 中定义的变量名 clerkId
-      clerkId: id,
+      clerkId: id, 
       // 3. 正确使用反引号 ` 和 ${} 进行字符串拼接，处理空名
       name: `${first_name || ""} ${last_name || ""}`.trim() || "新用户",
       // 4. 必须使用 schema.ts 中定义的变量名 imageUrl
-      imageUrl: image_url || "",
+      imageUrl: image_url || "", 
     });
   }
 
